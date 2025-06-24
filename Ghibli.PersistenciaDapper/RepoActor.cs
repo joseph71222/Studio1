@@ -17,7 +17,7 @@ public class RepoActor : RepoBase, IRepoActor
     public RepoActor(IDbConnection conexion)
         : base(conexion) { }
 
-    public void Alta(ActorVoz actor)
+    public async task AltaAsync(ActorVoz actor)
     {
         //throw new NotImplementedException();
 
@@ -28,23 +28,23 @@ public class RepoActor : RepoBase, IRepoActor
         parametros.Add("@unidactor", direction: ParameterDirection.Output);
     
         
-        Conexion.Execute("nuevoActor", parametros);
+        Conexion.Executeasync("nuevoActor", parametros);
        
         //Obtengo el valor de parametro de tipo salida
         actor.IdActor = parametros.Get<int>("@unidactor");
     }
 
-    public ActorVoz? Detalle(int idActor)
+    public async task<ActorVoz?> Detalleasing(int idActor)
     {
-         var actor = Conexion.QueryFirst<ActorVoz>(
+         var actor = await Conexion.QueryFirstAsync<ActorVoz>(
             _detalleActor,
             new {idActor = idActor});
         return actor;
     }
 
-    public IEnumerable<ActorVoz> Listar()
+    public async task<IEnumerable<ActorVoz>> Listar()
     {
-        var actores = Conexion.Query<ActorVoz>(_listadoActores);
+        var actores = Conexion.QueryAsync<ActorVoz>(_listadoActores);
         return actores;
     }
 }
